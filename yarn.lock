@@ -511,6 +511,11 @@ de-indent@^1.0.2:
   resolved "https://registry.npmmirror.com/de-indent/-/de-indent-1.0.2.tgz#b2038e846dc33baa5796128d0804b455b8c1e21d"
   integrity sha512-e/1zu3xH5MQryN2zdVaF0OrdNLUbvWxzMbi+iNA6Bky7l1RoP8a2fIbRocyHclXt/arDrrR6lL3TqFD9pMQTsg==
 
+dexie@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.npmmirror.com/dexie/-/dexie-4.2.0.tgz#c4df27c68f862dd833bf510415595bf4955148df"
+  integrity sha512-OSeyyWOUetDy9oFWeddJgi83OnRA3hSFh3RrbltmPgqHszE9f24eUCVLI4mPg0ifsWk0lQTdnS+jyGNrPMvhDA==
+
 element-plus@^2.11.2:
   version "2.11.2"
   resolved "https://registry.npmmirror.com/element-plus/-/element-plus-2.11.2.tgz#f1ba573426217ec936401fc4dc2a19bf11f5622e"
