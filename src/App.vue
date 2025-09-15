@@ -34,17 +34,22 @@
                         type="primary"
                         link
                         :icon="Plus"
-                        @click="addProject"
+                        @click="showCreateProject = true"
                     />
                 </div>
 
                 <el-menu
                     class="sidemenu projects"
-                    :default-active="'project-1'"
+                    :default-active="activeProject"
                     router
                 >
-                    <el-menu-item key="project-1">Проект 1</el-menu-item>
-                    <el-menu-item key="project-2">Проект ә</el-menu-item>
+                    <el-menu-item
+                        v-for="project in projects"
+                        :key="project.id"
+                        :index="`project-${project.id}`"
+                        @click="selectProject(project)"
+                        >{{ project.title }}</el-menu-item
+                    >
                 </el-menu>
             </el-scrollbar>
         </el-aside>
@@ -52,7 +57,7 @@
         <!-- Контент -->
         <el-container>
             <el-header class="toolbar">
-                <div class="toolbar-title">title project</div>
+                <div class="toolbar-title">{{ currentProjectTitle }}</div>
                 <div class="toolbar-actions">
                     <el-button size="small" type="primary" :icon="Plus"
                         >Добавить задачу</el-button
@@ -62,7 +67,12 @@
 
             <el-main class="main">
                 <el-scrollbar>
-                    <div class="content"></div>
+                    <div class="content">
+                        <CreateProject
+                            v-model="showCreateProject"
+                            @created="loadProjects"
+                        />
+                    </div>
                 </el-scrollbar>
             </el-main>
         </el-container>
@@ -70,6 +80,14 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed, onMounted } from 'vue';
+
+import { listProjects } from './service/project.service';
+
+import CreateProject from './components/create-project.vue';
+
+import type { Project } from './model/project';
+
 import {
     Message,
     Timer,
@@ -78,15 +96,34 @@ import {
     Plus,
 } from '@element-plus/icons-vue'; // ИКОНКИ!
 
-// <el-menu-item
-//                         v-for="project in projects"
-//                         :index="project.id + '-' + Date.now()"
-//                         >{{ project.title }}</el-menu-item
-//                     >
+const projects = ref<Project[]>([]);
+const activeProject = ref<string>('inbox');
+const currentProject = ref<Project | null>(null);
+const showCreateProject = ref(false);
 
-const addProject = () => {
-    // TODO: добавить логику создания проекта
+const currentProjectTitle = computed(() => {
+    if (activeProject.value === 'inbox') return 'Входящие';
+    if (activeProject.value === 'tomorrow') return 'Завтра';
+    if (activeProject.value === 'week') return 'На этой неделе';
+    if (activeProject.value === 'no-date') return 'Без даты';
+    return currentProject.value?.title || 'Проект';
+});
+
+const loadProjects = async () => {
+    try {
+        projects.value = await listProjects();
+    } catch (error) {
+        console.error('Ошибка загрузки проектов:', error);
+        // Можно добавить уведомление пользователю
+    }
 };
+
+const selectProject = (project: Project) => {
+    currentProject.value = project;
+    activeProject.value = `project-${project.id}`;
+};
+
+onMounted(loadProjects);
 </script>
 
 <style scoped>
@@ -95,7 +132,7 @@ const addProject = () => {
     border-right: 1px solid var(--sidebar-border);
 }
 
-:deep(.sidemenu) {
+.sidemenu {
     border-right: 0;
     padding: 8px 6px;
     background: transparent !important;
@@ -105,23 +142,22 @@ const addProject = () => {
     --el-menu-active-color: var(--sidebar-active-fg);
     --el-menu-hover-text-color: var(--sidebar-active-fg);
     --el-menu-hover-bg-color: var(--sidebar-hover-bg);
-
     --el-menu-item-height: 38px;
 }
 
-:deep(.sidemenu .el-menu-item) {
+.sidemenu :deep(.el-menu-item) {
     height: var(--el-menu-item-height);
     line-height: var(--el-menu-item-height);
     margin: 4px 6px;
     padding: 0 10px !important;
 }
 
-:deep(.sidemenu .el-menu-item .el-icon) {
+.sidemenu :deep(.el-menu-item .el-icon) {
     font-size: 16px;
     margin-right: 8px;
 }
 
-:deep(.sidemenu .el-menu-item.is-active) {
+.sidemenu :deep(.el-menu-item.is-active) {
     font-weight: 600;
     box-shadow: inset 2px 0 0 0 var(--el-color-primary);
 }
