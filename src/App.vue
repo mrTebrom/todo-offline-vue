@@ -43,8 +43,8 @@
                     :default-active="'project-1'"
                     router
                 >
-                    <el-menu-item index="project-1">Проект 1</el-menu-item>
-                    <el-menu-item index="project-2">Проект 2</el-menu-item>
+                    <el-menu-item key="project-1">Проект 1</el-menu-item>
+                    <el-menu-item key="project-2">Проект ә</el-menu-item>
                 </el-menu>
             </el-scrollbar>
         </el-aside>
@@ -76,7 +76,13 @@ import {
     Calendar,
     MoreFilled,
     Plus,
-} from '@element-plus/icons-vue';
+} from '@element-plus/icons-vue'; // ИКОНКИ!
+
+// <el-menu-item
+//                         v-for="project in projects"
+//                         :index="project.id + '-' + Date.now()"
+//                         >{{ project.title }}</el-menu-item
+//                     >
 
 const addProject = () => {
     // TODO: добавить логику создания проекта
